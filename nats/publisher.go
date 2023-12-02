@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"strconv"
 	"time"
-	"wb/config"
+	"wb/models"
 )
 
 func randomInt(min, max int) int {
@@ -20,16 +20,16 @@ func randomString(length int) string {
 	return string(b)
 }
 
-func RandomOrder() *config.Order {
+func RandomOrder() *models.Order {
 	orderUID := randomString(10)
 	trackNumber := "WB" + randomString(10)
 	timeNow := time.Now().Format(time.RFC3339)
 
-	order := config.Order{
+	order := models.Order{
 		OrderUID:    orderUID,
 		TrackNumber: trackNumber,
 		Entry:       randomString(4),
-		Delivery: config.Delivery{
+		Delivery: models.Delivery{
 			Name:    randomString(randomInt(3, 8)) + " " + randomString(randomInt(5, 12)),
 			Phone:   "+" + strconv.Itoa(randomInt(1, 999)) + strconv.Itoa(randomInt(1000000000, 9999999999)),
 			Zip:     strconv.Itoa(randomInt(1000000, 9999999)),
@@ -38,7 +38,7 @@ func RandomOrder() *config.Order {
 			Region:  randomString(randomInt(3, 15)),
 			Email:   randomString(randomInt(4, 15)) + "@gmail.com",
 		},
-		Payment: config.Payment{
+		Payment: models.Payment{
 			Transaction:  orderUID,
 			RequestID:    "",
 			Currency:     "USD",
@@ -50,7 +50,7 @@ func RandomOrder() *config.Order {
 			GoodsTotal:   randomInt(100, 999),
 			CustomFee:    0,
 		},
-		Items: []config.Item{
+		Items: []models.Item{
 			{
 				ChrtID:      randomInt(1000000, 9999999),
 				TrackNumber: trackNumber,

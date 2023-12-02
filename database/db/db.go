@@ -8,7 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 	"os"
-	"wb/config"
+	"wb/models"
 )
 
 type ConfigDB struct {
@@ -68,7 +68,8 @@ func Connect(config *ConfigDB) Postgres {
 	return Postgres{db: db}
 }
 
-func (p *Postgres) Save(order *config.Order) error {
+// сохраняет заказ в базе данных PostgreSQL.
+func (p *Postgres) Save(order *models.Order) error {
 	config := NewPostgresConfig()
 	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		config.DBHost,
@@ -127,9 +128,10 @@ func (p *Postgres) Save(order *config.Order) error {
 	return nil
 }
 
-func (p *Postgres) LoadOrderByUID(uid string) (*config.Order, bool) { //*
+// загружает заказ по его уникальному идентификатору (UID).
+func (p *Postgres) LoadOrderByUID(uid string) (*models.Order, bool) { //*
 	orderQuery := "SELECT * FROM orders WHERE order_uid = $1"
-	var order config.Order
+	var order models.Order
 
 	err := p.db.Get(&order, orderQuery, uid)
 	if err != nil {
@@ -141,7 +143,7 @@ func (p *Postgres) LoadOrderByUID(uid string) (*config.Order, bool) { //*
 	}
 
 	deliveryQuery := "SELECT * FROM delivery WHERE order_uid = $1"
-	var delivery config.Delivery
+	var delivery models.Delivery
 	err = p.db.Get(&delivery, deliveryQuery, uid)
 	if err != nil && err != sql.ErrNoRows {
 		log.Printf("Error fetching order: %v", err)
@@ -149,7 +151,7 @@ func (p *Postgres) LoadOrderByUID(uid string) (*config.Order, bool) { //*
 	}
 
 	paymentQuery := "SELECT * FROM payments WHERE order_uid = $1"
-	var payment config.Payment
+	var payment models.Payment
 	err = p.db.Get(&payment, paymentQuery, uid)
 	if err != nil && err != sql.ErrNoRows {
 		log.Printf("Error fetching order: %v", err)
@@ -157,7 +159,7 @@ func (p *Postgres) LoadOrderByUID(uid string) (*config.Order, bool) { //*
 	}
 
 	itemsQuery := "SELECT * FROM items WHERE order_uid = $1"
-	var items []config.Item
+	var items []models.Item
 	err = p.db.Select(&items, itemsQuery, uid)
 	if err != nil && err != sql.ErrNoRows {
 		log.Printf("Error fetching order: %v", err)
@@ -171,8 +173,9 @@ func (p *Postgres) LoadOrderByUID(uid string) (*config.Order, bool) { //*
 	return &order, true
 }
 
-func (p *Postgres) LoadAll() (*[]*config.Order, bool) {
-	var orders []*config.Order
+// загружает все заказы из базы данных PostgreSQL.
+func (p *Postgres) LoadAll() (*[]*models.Order, bool) {
+	var orders []*models.Order
 
 	err := p.db.Select(&orders, "SELECT * FROM orders;")
 	if err != nil {

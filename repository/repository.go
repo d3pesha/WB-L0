@@ -1,14 +1,14 @@
 package repository
 
 import (
-	"wb/config"
+	"wb/models"
 )
 
 type Database interface {
-	Save(order config.Order) error
-	Load(uid string) (config.Order, bool)
+	Save(order models.Order) error
+	Load(uid string) (models.Order, bool)
 }
 
 /*type OrderService interface {
-	Save(order config.Order) error
+	Save(order models.Order) error
 }*/

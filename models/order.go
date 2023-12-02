@@ -1,4 +1,4 @@
-package config
+package models
 
 type Order struct {
 	OrderUID          string   `db:"order_uid" json:"order_uid,omitempty"`

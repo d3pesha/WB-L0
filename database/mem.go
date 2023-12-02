@@ -3,9 +3,9 @@ package database
 import (
 	"fmt"
 	"log"
-	"wb/config"
 	"wb/database/cache"
 	"wb/database/db"
+	"wb/models"
 )
 
 type Memory struct {
@@ -40,7 +40,7 @@ func (m *Memory) DBtoMem() {
 	return
 }
 
-func (m *Memory) Save(order config.Order) error {
+func (m *Memory) Save(order models.Order) error {
 	fmt.Println("saved id : " + order.OrderUID)
 	if err := m.Cache.Save(order); err != nil {
 		return err
@@ -51,6 +51,6 @@ func (m *Memory) Save(order config.Order) error {
 	return nil
 }
 
-func (m *Memory) Load(uid string) (config.Order, bool) {
+func (m *Memory) Load(uid string) (models.Order, bool) {
 	return m.Cache.Load(uid)
 }

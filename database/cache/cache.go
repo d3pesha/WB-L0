@@ -2,19 +2,19 @@ package cache
 
 import (
 	"sync"
-	"wb/config"
+	"wb/models"
 )
 
 type Cache struct {
-	cache map[string]config.Order
+	cache map[string]models.Order
 	mutex sync.Mutex
 }
 
 func New() Cache {
-	return Cache{cache: make(map[string]config.Order)}
+	return Cache{cache: make(map[string]models.Order)}
 }
 
-func (c *Cache) Save(order config.Order) error {
+func (c *Cache) Save(order models.Order) error {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 
@@ -23,7 +23,7 @@ func (c *Cache) Save(order config.Order) error {
 	return nil
 }
 
-func (c *Cache) Load(uid string) (config.Order, bool) {
+func (c *Cache) Load(uid string) (models.Order, bool) {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 

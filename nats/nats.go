@@ -5,9 +5,9 @@ import (
 	"github.com/nats-io/stan.go"
 	"log"
 	"time"
-	"wb/config"
 	"wb/database/cache"
 	"wb/database/db"
+	"wb/models"
 )
 
 var CacheInstance = cache.New()
@@ -24,7 +24,7 @@ func Pub() {
 
 	postgresInstance := &db.Postgres{}
 	sub, err := sc.Subscribe("WBorder", func(msg *stan.Msg) {
-		var order config.Order // **
+		var order models.Order // **
 		err = json.Unmarshal(msg.Data, &order)
 		if err != nil {
 			log.Println("Error unmarshalling order:", err)
@@ -47,7 +47,7 @@ func Pub() {
 		order := RandomOrder()
 		savedInCache := make(chan struct{}, 1)
 		err = postgresInstance.Save(order)
-		go func(order config.Order) {
+		go func(order models.Order) {
 			err = CacheInstance.Save(order)
 			if err != nil {
 				log.Println("Error inserting order into cache: ", err)
